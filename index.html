@@ -35,36 +35,48 @@
     </table>
 
     <script>
-        async function buildTable() {
-            const tbody = document.getElementById('table-body');
-            try {
-                // 1. Fetch the JSON file
-                const response = await fetch('./data.json');
-                if (!response.ok) throw new Error("Data file not found");
+    async function init() {
+        const display = document.getElementById('table-body');
+        
+        try {
+            const response = await fetch('./data.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+
+            display.innerHTML = data.map(item => {
+                // Logic: check 'urls' first, then 'url', then default to empty array
+                const raw = item.urls || item.url || [];
+                const list = Array.isArray(raw) ? raw : [raw];
                 
-                const data = await response.json();
+                const links = list
+                    .filter(url => url && url.startsWith('http')) // Security check
+                    .map(url => {
+                        try {
+                            const domain = new URL(url).hostname.replace('www.', '');
+                            return `<a href="${url}" target="_blank">${domain}</a>`;
+                        } catch(e) {
+                            return `<a href="${url}" target="_blank">Link</a>`;
+                        }
+                    })
+                    .join('<br>');
 
-                // 2. Build the rows using your specific keys: id, name, description, url
-                const html = data.map(row => `
+                return `
                     <tr>
-                        <td><code>${row.id}</code></td>
-                        <td><strong>${row.name}</strong></td>
-                        <td>${row.description}</td>
-                        <td><a href="${row.url}" target="_blank" rel="noopener">${row.url}</a></td>
+                        <td><code>${item.id}</code></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.description}</td>
+                        <td>${links}</td>
                     </tr>
-                `).join('');
+                `;
+            }).join('');
 
-                // 3. Inject into the table
-                tbody.innerHTML = html;
-
-            } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:red">Error: ${error.message}</td></tr>`;
-                console.error('Fetch error:', error);
-            }
+        } catch (e) {
+            display.innerHTML = `<tr><td colspan="4" style="color:red">Error: ${e.message}</td></tr>`;
         }
+    }
 
-        // Run the function
-        buildTable();
-    </script>
+    init();
+</script>
 </body>
 </html>
