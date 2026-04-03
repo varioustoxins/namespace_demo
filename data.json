@@ -7,7 +7,7 @@
   { "id": "csrosetta", "name": "CS-Rosetta", "description": "Structure calculation", 
     "url": ["https://web.archive.org/web/20240421045134/https://csrosetta.chemistry.ucsc.edu/",
             "https://docs.rosettacommons.org/docs/latest/CS-Rosetta",
-            "https://spin.niddk.nih.gov/bax/software/CSROSETTA/"
+            "https://spin.niddk.nih.gov/bax/software/CSROSETTA/"],
   },
   { "id": "cyana", "name": "Cyana", "description": "Structure calculation", "url": "http://www.cyana.org" },
   { "id": "meld", "name": "MELD", "description": "Structure modelling and refinement", "url": "https://meldmd.org" },
