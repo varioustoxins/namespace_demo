@@ -1,0 +1,19 @@
+<table id="target-table">
+    <thead></thead>
+    <tbody id="table-body">
+        </tbody>
+</table>
+
+<script>
+    fetch('./data.json')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('table-body');
+            container.innerHTML = data.map(row => `
+                <tr>
+                    <td>${row.quarter}</td>
+                    <td>${row.revenue}</td>
+                </tr>
+            `).join('');
+        });
+</script>
