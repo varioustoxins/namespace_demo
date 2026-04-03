@@ -5,23 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NMR Registered Namespaces Registry</title>
     <style>
-        /* Base Styles */
         body { 
             font-family: system-ui, -apple-system, sans-serif; 
             padding: 2rem; 
             background: #f9fafb; 
             color: #1f2937; 
-            max-width: 1100px; 
+            max-width: 1200px; 
             margin: auto; 
         }
 
-        h1 { 
-            font-size: 1.75rem; 
-            margin-bottom: 0.5rem; 
-            color: #111827;
-        }
+        h1 { font-size: 1.75rem; margin-bottom: 0.5rem; color: #111827; }
 
-        /* The Raw Data Link Labeling */
         .source-notice {
             margin-bottom: 2rem;
             padding: 14px;
@@ -31,28 +25,23 @@
             font-size: 0.95rem;
         }
 
-        .raw-data-link { 
-            font-weight: 700; 
-            color: #2563eb; 
-            text-decoration: underline; 
-        }
+        .raw-data-link { font-weight: 700; color: #2563eb; text-decoration: underline; }
 
-        /* Table Styling */
         table { 
             width: 100%; 
             border-collapse: collapse; 
             background: white; 
             border-radius: 8px; 
-            overflow: hidden; 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+            table-layout: fixed; /* Helps manage long URLs */
         }
 
         th, td { 
             padding: 14px 16px; 
             text-align: left; 
             border-bottom: 1px solid #e5e7eb;
-            /* Vertically align all content to the top */
             vertical-align: top; 
+            word-wrap: break-word; /* Ensures long URLs wrap instead of breaking layout */
         }
 
         th { 
@@ -64,38 +53,59 @@
             font-weight: 600;
         }
 
-        tr:hover { background: #f8fafc; }
+        /* Column Widths */
+        .col-ns { width: 15%; }
+        .col-name { width: 20%; }
+        .col-desc { width: 30%; }
+        .col-res { width: 35%; }
 
-        /* Content Styling - Neutral Gray Theme */
         code { 
             background: #e5e7eb; 
             padding: 3px 6px; 
             border-radius: 4px; 
             font-family: ui-monospace, monospace; 
             font-size: 0.9em; 
-            color: #1f2937; /* Dark text instead of red */
+            color: #1f2937; 
         }
 
+        /* Link Styling for Full URLs */
         .link-container a { 
             display: block; 
             color: #2563eb; 
             text-decoration: none; 
             font-size: 0.85rem; 
-            margin-bottom: 6px;
-            white-space: nowrap;
+            margin-bottom: 8px;
+            word-break: break-all; /* Breaks long URLs naturally */
+            line-height: 1.4;
         }
 
-        .link-container a:hover { 
-            text-decoration: underline; 
-            color: #1e40af;
+        .link-container a:hover { text-decoration: underline; }
+
+        /* Comment Styling */
+        .comment-row td {
+            background-color: #fefeff;
+            padding: 8px 16px 16px 16px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            border-bottom: 2px solid #e5e7eb;
         }
 
-        .error-msg { 
-            color: #dc2626; 
-            padding: 40px; 
-            text-align: center; 
-            font-weight: bold; 
+        .comment-box {
+            border-top: 1px dashed #d1d5db;
+            padding-top: 8px;
+            font-style: italic;
         }
+
+        .comment-label {
+            font-weight: 600;
+            font-style: normal;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-right: 8px;
+        }
+
+        .error-msg { color: #dc2626; padding: 40px; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -110,10 +120,10 @@
     <table id="registry-table">
         <thead>
             <tr>
-                <th scope="col">Namespace</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Resources</th>
+                <th class="col-ns">Namespace</th>
+                <th class="col-name">Name</th>
+                <th class="col-desc">Description</th>
+                <th class="col-res">Resources</th>
             </tr>
         </thead>
         <tbody id="table-body">
@@ -127,28 +137,32 @@
             
             try {
                 const response = await fetch('./data.json');
-                
-                if (!response.ok) {
-                    throw new Error(`Data source not found (HTTP ${response.status})`);
-                }
+                if (!response.ok) throw new Error(`Data source not found (HTTP ${response.status})`);
 
                 const data = await response.json();
 
                 tbody.innerHTML = data.map(item => {
-                    // Logic to handle both singular "url" and plural/array formats
+                    // Handle URLs
                     const raw = item.url || item.urls || [];
                     const list = Array.isArray(raw) ? raw : [raw];
-
                     const links = list.map(link => {
-                        try {
-                            const clean = String(link).trim();
-                            if (!clean) return '';
-                            const domain = new URL(clean).hostname.replace('www.', '');
-                            return `<a href="${clean}" target="_blank" rel="noopener">${domain}</a>`;
-                        } catch (e) {
-                            return `<a href="${link}" target="_blank" rel="noopener">Link</a>`;
-                        }
+                        const clean = String(link).trim();
+                        if (!clean) return '';
+                        // Render the full URL as the text
+                        return `<a href="${clean}" target="_blank" rel="noopener">${clean}</a>`;
                     }).filter(h => h).join('');
+
+                    // Handle Comments
+                    const commentText = item.comment || item.comments || "";
+                    const commentRow = commentText ? `
+                        <tr class="comment-row">
+                            <td colspan="4">
+                                <div class="comment-box">
+                                    <span class="comment-label">Note:</span>${commentText}
+                                </div>
+                            </td>
+                        </tr>
+                    ` : '';
 
                     return `
                         <tr>
@@ -157,6 +171,7 @@
                             <td>${item.description || ''}</td>
                             <td class="link-container">${links || '—'}</td>
                         </tr>
+                        ${commentRow}
                     `;
                 }).join('');
 
