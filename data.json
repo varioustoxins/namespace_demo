@@ -1,0 +1,5 @@
+[
+  { "item": "Widget A", "price": "10.00", "stock": "In Stock" },
+  { "item": "Widget B", "price": "25.00", "stock": "Low Stock" },
+  { "item": "Widget C", "price": "5.00", "stock": "Out of Stock" }
+]
