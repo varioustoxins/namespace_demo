@@ -2,39 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>JSON to HTML Table Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Namespaces Registry</title>
     <style>
-        body { font-family: system-ui, sans-serif; padding: 2rem; background: #fafafa; }
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #007bff; color: white; }
-        .status { font-size: 0.8rem; padding: 4px 8px; border-radius: 4px; background: #eee; }
+        :root { --primary: #2c3e50; --accent: #3498db; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.5; color: var(--primary); padding: 2rem; max-width: 1000px; margin: auto; background-color: #f8f9fa; }
+        h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #edf2f7; }
+        th { background-color: #f1f5f9; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; }
+        tr:hover { background-color: #fcfcfc; }
+        code { background: #f1f1f1; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .btn { display: inline-block; padding: 5px 12px; background: var(--accent); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; }
+        .btn:hover { background: #2980b9; }
+        #loading { padding: 20px; text-align: center; font-style: italic; color: #666; }
     </style>
 </head>
 <body>
 
-    <h1>Live Data Table</h1>
-    <p>This table is built dynamically from <code>data.json</code>.</p>
+    <h1>Registered Namespaces</h1>
+    <p>A machine-readable registry of NMR data exchange standards and software tools.</p>
 
-    <table id="data-table">
+    <table id="namespace-table">
         <thead>
             <tr>
-                <th>Item Name</th>
-                <th>Price (USD)</th>
-                <th>Status</th>
+                <th scope="col">Namespace</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Resource</th>
             </tr>
         </thead>
         <tbody id="table-body">
-            <tr><td colspan="3">Loading data...</td></tr>
+            <tr><td colspan="4" id="loading">Initialising registry...</td></tr>
         </tbody>
     </table>
 
     <script>
-        async function buildTable() {
+        async function loadRegistry() {
+            const tbody = document.getElementById('table-body');
             try {
-                // 1. Fetch the data from the local JSON file
                 const response = await fetch('./data.json');
+                if (!response.ok) throw new Error('Failed to fetch data');
                 const data = await response.json();
+
+                tbody.innerHTML = data.map(item => `
+                    <tr>
+                        <td><code>${item.id}</code></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.description}</td>
+                        <td><a href="${item.url}" class="btn" target="_blank" rel="noopener">Visit Site</a></td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="4" style="color:red; text-align:center;">Error: ${error.message}</td></tr>`;
+            }
+        }
+
+        loadRegistry();
+    </script>
+</body>
+</html>                const data = await response.json();
 
                 // 2. Map the data to HTML rows
                 const html = data.map(row => `
