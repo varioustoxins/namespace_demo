@@ -1,19 +1,59 @@
-<table id="target-table">
-    <thead></thead>
-    <tbody id="table-body">
-        </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON to HTML Table Demo</title>
+    <style>
+        body { font-family: system-ui, sans-serif; padding: 2rem; background: #fafafa; }
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #007bff; color: white; }
+        .status { font-size: 0.8rem; padding: 4px 8px; border-radius: 4px; background: #eee; }
+    </style>
+</head>
+<body>
 
-<script>
-    fetch('./data.json')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('table-body');
-            container.innerHTML = data.map(row => `
-                <tr>
-                    <td>${row.quarter}</td>
-                    <td>${row.revenue}</td>
-                </tr>
-            `).join('');
-        });
-</script>
+    <h1>Live Data Table</h1>
+    <p>This table is built dynamically from <code>data.json</code>.</p>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Price (USD)</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <tr><td colspan="3">Loading data...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        async function buildTable() {
+            try {
+                // 1. Fetch the data from the local JSON file
+                const response = await fetch('./data.json');
+                const data = await response.json();
+
+                // 2. Map the data to HTML rows
+                const html = data.map(row => `
+                    <tr>
+                        <td><strong>${row.item}</strong></td>
+                        <td>$${row.price}</td>
+                        <td><span class="status">${row.stock}</span></td>
+                    </tr>
+                `).join('');
+
+                // 3. Inject into the table body
+                document.getElementById('table-body').innerHTML = html;
+            } catch (error) {
+                document.getElementById('table-body').innerHTML = `<tr><td colspan="3">Error loading data.</td></tr>`;
+                console.error('Fetch error:', error);
+            }
+        }
+
+        buildTable();
+    </script>
+</body>
+</html>
