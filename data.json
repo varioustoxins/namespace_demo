@@ -1,10 +1,10 @@
 [
-  { "id": "nef", "name": "NEF Standard", "description": "Data Exchange", "url": "https://github.com/m r-nef/nef" },
-  { "id": "nefpls", "name": "NEF Pipelines", "description": "Format transcoding and NEF manipulation", "url": "https://example.org/nefpls" },
+  { "id": "nef", "name": "NEF Standard", "description": "Data Exchange", "url": "https://github.com/NMRExchangeFormat/NEF" },
+  { "id": "nefpls", "name": "NEF Pipelines", "description": "Format transcoding and NEF manipulation", "url": "https://github.com/varioustoxins/NEF-Pipelines" },
   { "id": "amber", "name": "Amber", "description": "Structure modelling and refinement", "url": "https://ambermd.org" },
   { "id": "aria", "name": "Aria", "description": "Structure calculation", "url": "https://aria.pasteur.fr" },
   { "id": "ccpn", "name": "CcpNmr Analysis", "description": "NMR spectra processing and data analysis", "url": "https://ccpn.ac.uk" },
-  { "id": "csrosetta", "name": "CS-Rosetta", "description": "Structure calculation", "url": "https://csrosetta.org" },
+  { "id": "csrosetta", "name": "CS-Rosetta", "description": "Structure calculation", "url": "https://web.archive.org/web/20240421045134/https://csrosetta.chemistry.ucsc.edu/" },
   { "id": "cyana", "name": "Cyana", "description": "Structure calculation", "url": "http://www.cyana.org" },
   { "id": "meld", "name": "MELD", "description": "Structure modelling and refinement", "url": "https://meldmd.org" },
   { "id": "NMRFx", "name": "NMRFx", "description": "Structure calculation", "url": "https://nmrfx.org" },
