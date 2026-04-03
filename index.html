@@ -1,87 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registered Namespaces Registry</title>
-    <style>
-        :root { --primary: #2c3e50; --accent: #3498db; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.5; color: var(--primary); padding: 2rem; max-width: 1000px; margin: auto; background-color: #f8f9fa; }
-        h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #edf2f7; }
-        th { background-color: #f1f5f9; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; }
-        tr:hover { background-color: #fcfcfc; }
-        code { background: #f1f1f1; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
-        .btn { display: inline-block; padding: 5px 12px; background: var(--accent); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; }
-        .btn:hover { background: #2980b9; }
-        #loading { padding: 20px; text-align: center; font-style: italic; color: #666; }
-    </style>
-</head>
-<body>
+<script>
+    async function loadRegistry() {
+        const tbody = document.getElementById('table-body');
+        try {
+            // 1. Fetch the data
+            const response = await fetch('./data.json');
+            if (!response.ok) throw new Error('Could not find data.json');
+            
+            const data = await response.json();
 
-    <h1>Registered Namespaces</h1>
-    <p>A machine-readable registry of NMR data exchange standards and software tools.</p>
+            // 2. Map using the CORRECT keys from your translated JSON
+            // row.id          -> "nef"
+            // row.name        -> "NEF Standard"
+            // row.description -> "Data Exchange"
+            // row.url         -> "https://..."
+            
+            tbody.innerHTML = data.map(row => `
+                <tr>
+                    <td><code>${row.id}</code></td>
+                    <td><strong>${row.name}</strong></td>
+                    <td>${row.description}</td>
+                    <td><a href="${row.url}" class="btn" target="_blank" rel="noopener">Visit Site</a></td>
+                </tr>
+            `).join('');
 
-    <table id="namespace-table">
-        <thead>
-            <tr>
-                <th scope="col">Namespace</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Resource</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            <tr><td colspan="4" id="loading">Initialising registry...</td></tr>
-        </tbody>
-    </table>
-
-    <script>
-        async function loadRegistry() {
-            const tbody = document.getElementById('table-body');
-            try {
-                const response = await fetch('./data.json');
-                if (!response.ok) throw new Error('Failed to fetch data');
-                const data = await response.json();
-
-                tbody.innerHTML = data.map(item => `
-                    <tr>
-                        <td><code>${item.id}</code></td>
-                        <td><strong>${item.name}</strong></td>
-                        <td>${item.description}</td>
-                        <td><a href="${item.url}" class="btn" target="_blank" rel="noopener">Visit Site</a></td>
-                    </tr>
-                `).join('');
-
-            } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:red; text-align:center;">Error: ${error.message}</td></tr>`;
-            }
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color:red; text-align:center;">Error: ${error.message}</td></tr>`;
+            console.error('Registry Load Error:', error);
         }
+    }
 
-        loadRegistry();
-    </script>
-</body>
-</html>                const data = await response.json();
-
-                // 2. Map the data to HTML rows
-                const html = data.map(row => `
-                    <tr>
-                        <td><strong>${row.item}</strong></td>
-                        <td>$${row.price}</td>
-                        <td><span class="status">${row.stock}</span></td>
-                    </tr>
-                `).join('');
-
-                // 3. Inject into the table body
-                document.getElementById('table-body').innerHTML = html;
-            } catch (error) {
-                document.getElementById('table-body').innerHTML = `<tr><td colspan="3">Error loading data.</td></tr>`;
-                console.error('Fetch error:', error);
-            }
-        }
-
-        buildTable();
-    </script>
-</body>
-</html>
+    loadRegistry();
+</script>
