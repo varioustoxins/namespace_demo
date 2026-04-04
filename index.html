@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NMR Registered Namespaces Registry</title>
     <style>
+        /* Base Styles */
         body { 
             font-family: system-ui, -apple-system, sans-serif; 
             padding: 2rem; 
@@ -12,97 +13,76 @@
             color: #1f2937; 
             max-width: 1200px; 
             margin: auto; 
+            line-height: 1.5;
         }
 
         h1 { font-size: 1.75rem; margin-bottom: 0.5rem; color: #111827; }
 
         .source-notice {
-            margin-bottom: 2rem;
-            padding: 14px;
-            background: #f3f4f6;
-            border-left: 4px solid #374151;
-            color: #374151;
-            font-size: 0.95rem;
+            margin-bottom: 2rem; padding: 14px; background: #f3f4f6;
+            border-left: 4px solid #374151; color: #374151; font-size: 0.95rem;
         }
 
         .raw-data-link { font-weight: 700; color: #2563eb; text-decoration: underline; }
 
+        /* Table Styling - Uniform Font Size */
         table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            background: white; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-            table-layout: fixed; /* Helps manage long URLs */
+            width: 100%; border-collapse: collapse; background: white; 
+            border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+            table-layout: fixed;
+            font-size: 0.95rem; /* Unified base size for the whole table */
         }
 
         th, td { 
-            padding: 14px 16px; 
-            text-align: left; 
-            border-bottom: 1px solid #e5e7eb;
-            vertical-align: top; 
-            word-wrap: break-word; /* Ensures long URLs wrap instead of breaking layout */
+            padding: 14px 16px; text-align: left; 
+            border-bottom: 1px solid #e5e7eb; vertical-align: top; 
+            word-wrap: break-word; 
         }
 
         th { 
             background: #f3f4f6; 
-            font-size: 0.75rem; 
+            font-size: 0.8rem; 
             text-transform: uppercase; 
-            letter-spacing: 0.05em; 
             color: #6b7280; 
-            font-weight: 600;
+            font-weight: 600; 
         }
 
-        /* Column Widths */
-        .col-ns { width: 15%; }
-        .col-name { width: 20%; }
-        .col-desc { width: 30%; }
-        .col-res { width: 35%; }
-
+        /* Standardizing Program Names and Codes */
         code { 
             background: #e5e7eb; 
             padding: 3px 6px; 
             border-radius: 4px; 
             font-family: ui-monospace, monospace; 
-            font-size: 0.9em; 
+            font-size: 0.9rem; /* Matches the table text size */
             color: #1f2937; 
         }
 
-        /* Link Styling for Full URLs */
+        strong { font-size: 0.95rem; color: #111827; }
+
+        /* Standardizing Links */
         .link-container a { 
             display: block; 
             color: #2563eb; 
             text-decoration: none; 
-            font-size: 0.85rem; 
-            margin-bottom: 8px;
-            word-break: break-all; /* Breaks long URLs naturally */
+            font-size: 0.9rem; /* Normalized with the table */
+            margin-bottom: 8px; 
+            word-break: break-all; 
             line-height: 1.4;
         }
-
         .link-container a:hover { text-decoration: underline; }
 
-        /* Comment Styling */
+        /* Standardizing Comments (No Dotted Line) */
         .comment-row td {
-            background-color: #fefeff;
-            padding: 8px 16px 16px 16px;
-            font-size: 0.9rem;
-            color: #4b5563;
+            background-color: #fcfcfc;
+            padding: 8px 16px 20px 16px; 
             border-bottom: 2px solid #e5e7eb;
         }
 
         .comment-box {
-            border-top: 1px dashed #d1d5db;
-            padding-top: 8px;
             font-style: italic;
-        }
-
-        .comment-label {
-            font-weight: 600;
-            font-style: normal;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: #9ca3af;
-            margin-right: 8px;
+            font-size: 0.9rem; /* Consistent with the rest of the table */
+            color: #4b5563;
+            line-height: 1.5;
         }
 
         .error-msg { color: #dc2626; padding: 40px; text-align: center; font-weight: bold; }
@@ -110,7 +90,7 @@
 </head>
 <body>
 
-    <h1>NEF Namespace Registry</h1>
+    <h1>Registered Namespaces Registry</h1>
     
     <div class="source-notice">
         The raw data for this table can be found at: 
@@ -120,10 +100,10 @@
     <table id="registry-table">
         <thead>
             <tr>
-                <th class="col-ns">Namespace</th>
-                <th class="col-name">Program</th>
-                <th class="col-desc">Description</th>
-                <th class="col-res">Developers Web pPage</th>
+                <th style="width: 15%">Namespace</th>
+                <th style="width: 20%">Name</th>
+                <th style="width: 30%">Description</th>
+                <th style="width: 35%">Resources</th>
             </tr>
         </thead>
         <tbody id="table-body">
@@ -137,39 +117,34 @@
             
             try {
                 const response = await fetch('./data.json');
-                if (!response.ok) throw new Error(`Data source not found (HTTP ${response.status})`);
-
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
 
                 tbody.innerHTML = data.map(item => {
-                    // Handle URLs
+                    // Handle URL / URLs
                     const raw = item.url || item.urls || [];
                     const list = Array.isArray(raw) ? raw : [raw];
-                    const links = list.map(link => {
+                    const linksHtml = list.map(link => {
                         const clean = String(link).trim();
                         if (!clean) return '';
-                        // Render the full URL as the text
                         return `<a href="${clean}" target="_blank" rel="noopener">${clean}</a>`;
                     }).filter(h => h).join('');
 
-                    // Handle Comments
-                    const commentText = item.comment || item.comments || "";
-                    const commentRow = commentText ? `
+                    // Handle Comments (spanning row, no dotted line)
+                    const note = item.comment || item.comments || "";
+                    const commentRow = note ? `
                         <tr class="comment-row">
                             <td colspan="4">
-                                <div class="comment-box">
-                                    <span class="comment-label">Note:</span>${commentText}
-                                </div>
+                                <div class="comment-box">${note}</div>
                             </td>
-                        </tr>
-                    ` : '';
+                        </tr>` : '';
 
                     return `
                         <tr>
                             <td><code>${item.id || ''}</code></td>
                             <td><strong>${item.name || ''}</strong></td>
                             <td>${item.description || ''}</td>
-                            <td class="link-container">${links || '—'}</td>
+                            <td class="link-container">${linksHtml || '—'}</td>
                         </tr>
                         ${commentRow}
                     `;
