@@ -1,6 +1,6 @@
 [
-  { "id": "nef", "name": "NEF Standard", "description": "Data Exchange", "url": "https://github.com/NMRExchangeFormat/NEF" },
-  { "id": "nefpls", "name": "NEF Pipelines", "description": "Format transcoding and NEF manipulation", "url": "https://github.com/varioustoxins/NEF-Pipelines" },
+   { "id": "nefpls", "name": "NEF Pipelines", "description": "Format transcoding and NEF manipulation", "url": "https://github.com/varioustoxins/NEF-Pipelines" },
+   { "id": "nef", "name": "NEF Standard", "description": "Data Exchange", "url": "https://github.com/NMRExchangeFormat/NEF" },
   { "id": "amber", "name": "Amber", "description": "Structure modelling and refinement", "url": "https://ambermd.org" },
   { "id": "aria", "name": "Aria", "description": "Structure calculation", "url": "https://aria.pasteur.fr" },
   { "id": "ccpn", "name": "CcpNmr Analysis", "description": "NMR spectra processing and data analysis", "url": "https://ccpn.ac.uk" },
